@@ -1,0 +1,110 @@
+# ==============================================
+# HTACCESS - Admin Panel
+# Web App Hoc tap Truc tuyen
+# Truong Tieu hoc Bui Thi Xuan
+# ==============================================
+
+# Bat mod_rewrite
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Tu dong detect moi truong
+    # Production domains
+    RewriteCond %{HTTP_HOST} (truongbuithixuan\.online|topwebvietnam\.com)$ [NC]
+    RewriteRule .* - [E=BASE:/admin/]
+
+    # Localhost development
+    RewriteCond %{HTTP_HOST} ^localhost$ [NC]
+    RewriteRule .* - [E=BASE:/truongbuithixuan/admin/]
+
+    # Chuyen HTTP sang HTTPS tren production
+    RewriteCond %{HTTP_HOST} (truongbuithixuan\.online|topwebvietnam\.com)$ [NC]
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}/admin/$1 [L,R=301]
+</IfModule>
+
+# ==============================================
+# BAO MAT ADMIN
+# ==============================================
+
+# Chan truy cap truc tiep vao file config/env
+<FilesMatch "^(config\.php|\.env|\.git|\.htpasswd)">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Chan directory listing
+Options -Indexes
+
+# Chan truy cap file .htaccess
+<Files .htaccess>
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
+</Files>
+
+# ==============================================
+# BAO MAT HEADERS
+# ==============================================
+
+<IfModule mod_headers.c>
+    # Chong clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    # Chong XSS
+    Header always set X-XSS-Protection "1; mode=block"
+
+    # Chong MIME sniffing
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Referrer Policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Cache-Control cho trang admin (khong cache)
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+</IfModule>
+
+# ==============================================
+# CHARSET
+# ==============================================
+
+AddDefaultCharset UTF-8
+
+# ==============================================
+# PHP SETTINGS (neu server cho phep)
+# ==============================================
+
+<IfModule mod_php5.c>
+    php_value upload_max_filesize 50M
+    php_value post_max_size 50M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+    php_value memory_limit 256M
+</IfModule>
+
+<IfModule mod_php7.c>
+    php_value upload_max_filesize 50M
+    php_value post_max_size 50M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+    php_value memory_limit 256M
+</IfModule>
+
+<IfModule mod_php.c>
+    php_value upload_max_filesize 50M
+    php_value post_max_size 50M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+    php_value memory_limit 256M
+</IfModule>

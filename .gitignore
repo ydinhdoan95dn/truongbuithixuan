@@ -1,0 +1,37 @@
+cd /var/www/html/truongbuithixuan
+git init
+cat > .gitignore << 'EOF'
+# Config file
+config.php
+
+# Database dumps & migrations
+*.sql
+database/*.sql
+
+# Backups & archives
+*.zip
+*.tar.gz
+*.bak
+
+# Server config
+*.conf
+
+# Uploaded files
+uploads/*
+!uploads/.gitkeep
+!uploads/documents/.gitkeep
+!uploads/editor/.gitkeep
+
+# Debug & temp files
+debug.php
+fix-encoding.php
+fix_password.sql
+create-exam-data.php
+test-viewer.php
+xoa_tam/
+HUONG_DAN_CAI_DAT.txt
+
+# OS files
+.DS_Store
+Thumbs.db
+EOF
