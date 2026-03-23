@@ -1871,7 +1871,7 @@ $jsData = array(
                     '</button>';
                 } else {
                     actionBtn = '<div style="width: 100%; padding: 12px; background: #F3F4F6; color: #6B7280; border-radius: 10px; text-align: center; font-weight: 700; font-size: 0.9rem; margin-top: auto;">' +
-                        '🔒 Chỉ mở vào T7-CN' +
+                        '🔒 Ngoài giờ mở thi' +
                     '</div>';
                 }
             } else {
@@ -1882,7 +1882,7 @@ $jsData = array(
                     '</button>';
                 } else {
                     actionBtn = '<div style="width: 100%; padding: 12px; background: #F3F4F6; color: #6B7280; border-radius: 10px; text-align: center; font-weight: 700; font-size: 0.9rem; margin-top: auto;">' +
-                        '🔒 Chỉ mở vào T7-CN' +
+                        '🔒 Ngoài giờ mở thi' +
                     '</div>';
                 }
             }

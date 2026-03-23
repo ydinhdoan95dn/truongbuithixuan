@@ -102,22 +102,45 @@ function isExamOpen($exam) {
 
     $currentDay = $dayMap[$dayOfWeek];
 
-    // Lấy ngày mở thi từ exam hoặc từ cài đặt hệ thống
-    $ngayMoThi = isset($exam['ngay_mo_thi']) && !empty($exam['ngay_mo_thi']) ? $exam['ngay_mo_thi'] : 't7,cn';
+    // Lấy ngày mở thi từ exam, nếu không có thì đọc từ cài đặt hệ thống
+    $ngayMoThi = isset($exam['ngay_mo_thi']) && !empty($exam['ngay_mo_thi']) ? $exam['ngay_mo_thi'] : '';
+    if (empty($ngayMoThi) || $ngayMoThi === 't7,cn') {
+        // Đọc từ cài đặt hệ thống (bảng cau_hinh)
+        $connCH = getDBConnection();
+        $stmtCH = $connCH->prepare("SELECT gia_tri FROM cau_hinh WHERE ma_cau_hinh = 'ngay_mo_thi'");
+        $stmtCH->execute();
+        $cauHinh = $stmtCH->fetch();
+        if ($cauHinh && !empty($cauHinh['gia_tri'])) {
+            $ngayMoThi = $cauHinh['gia_tri'];
+        }
+    }
+    if (empty($ngayMoThi)) {
+        $ngayMoThi = 't7,cn'; // Fallback cuối cùng
+    }
     $allowedDays = explode(',', $ngayMoThi);
-    // Trim spaces
     $allowedDays = array_map('trim', $allowedDays);
 
     if (!in_array($currentDay, $allowedDays)) {
         return false;
     }
 
-    // Kiểm tra giờ (nếu có cài đặt)
+    // Kiểm tra giờ - đọc từ đề thi hoặc cài đặt hệ thống
     $currentTime = date('H:i:s');
-    $startTime = isset($exam['gio_bat_dau']) ? $exam['gio_bat_dau'] : null;
-    $endTime = isset($exam['gio_ket_thuc']) ? $exam['gio_ket_thuc'] : null;
+    $startTime = isset($exam['gio_bat_dau']) && !empty($exam['gio_bat_dau']) ? $exam['gio_bat_dau'] : null;
+    $endTime = isset($exam['gio_ket_thuc']) && !empty($exam['gio_ket_thuc']) ? $exam['gio_ket_thuc'] : null;
 
-    if ($startTime && $endTime) {
+    if (!$startTime || !$endTime || ($startTime === '00:00:00' && $endTime === '00:00:00')) {
+        if (!isset($connCH)) $connCH = getDBConnection();
+        $stmtGio = $connCH->prepare("SELECT ma_cau_hinh, gia_tri FROM cau_hinh WHERE ma_cau_hinh IN ('gio_bat_dau', 'gio_ket_thuc')");
+        $stmtGio->execute();
+        $gioRows = $stmtGio->fetchAll();
+        foreach ($gioRows as $g) {
+            if ($g['ma_cau_hinh'] === 'gio_bat_dau') $startTime = $g['gia_tri'];
+            if ($g['ma_cau_hinh'] === 'gio_ket_thuc') $endTime = $g['gia_tri'];
+        }
+    }
+
+    if ($startTime && $endTime && $startTime !== '00:00:00') {
         if ($currentTime < $startTime || $currentTime > $endTime) {
             return false;
         }
