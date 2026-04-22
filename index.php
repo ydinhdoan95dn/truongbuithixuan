@@ -73,7 +73,7 @@ $topHocSinh = $stmtXH->fetchAll();
     ?>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -84,7 +84,7 @@ $topHocSinh = $stmtXH->fetchAll();
         html, body {
             height: 100%;
             overflow: hidden;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
@@ -163,7 +163,7 @@ $topHocSinh = $stmtXH->fetchAll();
             border-radius: 12px;
             background: rgba(255,255,255,0.05);
             color: rgba(255,255,255,0.8);
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
@@ -217,7 +217,7 @@ $topHocSinh = $stmtXH->fetchAll();
             border-radius: 14px;
             background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             color: white;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 17px;
             font-weight: 700;
             cursor: pointer;
@@ -288,7 +288,7 @@ $topHocSinh = $stmtXH->fetchAll();
             border-radius: 25px;
             background: white;
             color: #666;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
@@ -582,7 +582,7 @@ $topHocSinh = $stmtXH->fetchAll();
             border-radius: 12px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 15px;
             font-weight: 700;
             cursor: pointer;
@@ -644,7 +644,7 @@ $topHocSinh = $stmtXH->fetchAll();
             border-radius: 10px;
             background: rgba(255,255,255,0.05);
             color: rgba(255,255,255,0.7);
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
@@ -713,7 +713,7 @@ $topHocSinh = $stmtXH->fetchAll();
             padding: 10px 20px;
             border: none;
             border-radius: 10px;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;

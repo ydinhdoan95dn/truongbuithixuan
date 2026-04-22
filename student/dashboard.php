@@ -167,14 +167,14 @@ $jsData = array(
     <title>Dashboard - <?php echo SITE_NAME; ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
             height: 100%;
             overflow: hidden;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: #F0F2F5;
         }
 
@@ -770,7 +770,7 @@ $jsData = array(
             padding: 10px 20px;
             border: none;
             border-radius: 10px;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
@@ -857,7 +857,7 @@ $jsData = array(
             color: white;
             border: none;
             border-radius: 12px;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 1rem;
             font-weight: 700;
             cursor: pointer;

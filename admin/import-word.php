@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $deThiId = $conn->lastInsertId();
 
                 // Thêm từng câu hỏi
-                $stmtCau = $conn->prepare("INSERT INTO cau_hoi (de_thi_id, noi_dung, dap_an_a, dap_an_b, dap_an_c, dap_an_d, dap_an_dung, thu_tu) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmtCau = $conn->prepare("INSERT INTO cau_hoi (de_thi_id, noi_dung, dap_an_a, dap_an_b, dap_an_c, dap_an_d, dap_an_dung, giai_thich, thu_tu) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
                 $thuTu = 1;
                 $importedCount = 0;
@@ -84,6 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         continue;
                     }
 
+                    $giaiThich = isset($q['giai_thich']) ? $q['giai_thich'] : '';
                     $stmtCau->execute(array(
                         $deThiId,
                         $q['noi_dung'],
@@ -92,6 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $q['dap_an_c'],
                         $q['dap_an_d'],
                         $q['dap_an_dung'],
+                        $giaiThich,
                         $thuTu
                     ));
                     $importedCount++;
@@ -153,7 +155,7 @@ $pageTitle = 'Smart Editor - Import Đề Thi';
     <title><?php echo $pageTitle; ?> - <?php echo SITE_NAME; ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/style.css">
     <!-- TinyMCE -->
@@ -246,7 +248,7 @@ $pageTitle = 'Smart Editor - Import Đề Thi';
 
         .stat-value {
             font-weight: 700;
-            color: #667eea;
+            color: #4F46E5;
         }
 
         .question-card {
@@ -254,7 +256,7 @@ $pageTitle = 'Smart Editor - Import Đề Thi';
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 12px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #4F46E5;
         }
 
         .question-card.has-error {
@@ -264,7 +266,7 @@ $pageTitle = 'Smart Editor - Import Đề Thi';
 
         .question-number {
             font-weight: 700;
-            color: #667eea;
+            color: #4F46E5;
             margin-bottom: 8px;
             display: flex;
             align-items: center;
@@ -394,13 +396,23 @@ $pageTitle = 'Smart Editor - Import Đề Thi';
             overflow-x: auto;
         }
 
+        .explanation-box {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: rgba(79,70,229,0.06);
+            border-radius: 8px;
+            font-size: 0.88rem;
+            color: #4338CA;
+        }
+        .explanation-box span { font-weight: 600; }
+
         /* Typing indicator */
         .typing-indicator {
             display: none;
             align-items: center;
             gap: 8px;
             font-size: 0.85rem;
-            color: #667eea;
+            color: #4F46E5;
         }
 
         .typing-indicator.show {
@@ -415,7 +427,7 @@ $pageTitle = 'Smart Editor - Import Đề Thi';
         .typing-dots span {
             width: 6px;
             height: 6px;
-            background: #667eea;
+            background: #4F46E5;
             border-radius: 50%;
             animation: typing 1s infinite;
         }
@@ -493,22 +505,47 @@ $pageTitle = 'Smart Editor - Import Đề Thi';
                     </div>
                     <div class="panel-body">
                         <div class="instructions-box" id="instructionsBox">
-                            <h4>📋 Định dạng câu hỏi:</h4>
-                            <pre>Câu 1: Nội dung câu hỏi?
+                            <h4>📋 Các định dạng được hỗ trợ tự động:</h4>
+                            <pre style="font-size:0.8rem;">─── Format 1: Câu + số ───
+Câu 1: Nội dung câu hỏi?
 A. Đáp án A
 B. Đáp án B
 C. Đáp án C
 D. Đáp án D
 Đáp án: B
 
-Câu 2: 5 + 3 = ?
-A. 7
-B. 8
-C. 9
-D. 10
-Đáp án: B</pre>
-                            <div style="margin-top: 12px; font-size: 0.85rem; color: #92400E;">
-                                <strong>Mẹo:</strong> Copy từ Word và dán trực tiếp vào editor!
+─── Format 2: Số đơn thuần ───
+1. Nội dung câu hỏi?
+A) Đáp án A
+B) Đáp án B
+C) Đáp án C
+D) Đáp án D
+ĐA: C
+
+─── Format 3: Đáp án đúng tô đậm (từ Word) ───
+Câu 3: Nội dung câu hỏi?
+A. Đáp án A
+**B. Đáp án đúng** ← in đậm → tự nhận ra
+C. Đáp án C
+D. Đáp án D
+
+─── Format 4: Đánh dấu sao (*) ───
+Câu 4: Nội dung?
+A. Đáp án A
+*B. Đáp án đúng
+C. Đáp án C
+D. Đáp án D
+
+─── Format 5: Có giải thích ───
+Câu 5: Nội dung câu hỏi?
+A. Đáp án A
+B. Đáp án B
+C. Đáp án C
+D. Đáp án D
+Đáp án: A
+Giải thích: Vì...</pre>
+                            <div style="margin-top: 10px; font-size: 0.83rem; color: #92400E;">
+                                <strong>Mẹo:</strong> Copy thẳng từ Word — đáp án in đậm tự động được nhận diện!
                             </div>
                         </div>
                         <div class="editor-wrapper">
@@ -625,7 +662,7 @@ D. 10
             statusbar: true,
             paste_as_text: false,
             paste_word_valid_elements: 'p,b,strong,i,em,u,br',
-            content_style: 'body { font-family: Quicksand, sans-serif; font-size: 14px; line-height: 1.6; }',
+            content_style: 'body { font-family: Inter, sans-serif; font-size: 14px; line-height: 1.6; }',
             setup: function(editor) {
                 tinyMCEInstance = editor;
 
@@ -671,93 +708,174 @@ D. 10
         // Parse content and extract questions
         function parseContent() {
             if (!tinyMCEInstance) return;
-
-            var content = tinyMCEInstance.getContent({ format: 'text' });
-
-            if (!content.trim()) {
-                showNoQuestions();
-                return;
-            }
-
-            parsedQuestions = parseQuestionsFromText(content);
+            var text = tinyMCEInstance.getContent({ format: 'text' });
+            var html = tinyMCEInstance.getContent({ format: 'html' });
+            if (!text.trim()) { showNoQuestions(); return; }
+            parsedQuestions = parseQuestionsSmartV2(text, html);
             updatePreview();
         }
 
-        // Smart question parser algorithm
-        function parseQuestionsFromText(text) {
+        // ─── Smart parser v2: HTML-aware + state machine ───────────────────────
+        function parseQuestionsSmartV2(text, html) {
+            var boldSet = extractBoldTextSet(html);
+            var lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
             var questions = [];
-            var lines = text.split(/\n/);
-            var currentQuestion = null;
+            var cur = null;
+            var state = 'IDLE'; // IDLE | IN_QUESTION | IN_ANSWERS
 
             for (var i = 0; i < lines.length; i++) {
                 var line = lines[i].trim();
                 if (!line) continue;
 
-                // Check for question start: "Câu 1:", "Câu 1.", "1.", "1:", "1)"
-                var questionMatch = line.match(/^(?:Câu\s*)?(\d+)[.:)\s]+(.+)/i);
-                if (questionMatch) {
-                    // Save previous question
-                    if (currentQuestion && currentQuestion.noi_dung) {
-                        questions.push(currentQuestion);
+                // 1. Question start?
+                var qText = matchQuestionStart(line);
+                if (qText !== null) {
+                    if (cur) { finalizeQ(cur, boldSet); questions.push(cur); }
+                    cur = { noi_dung: qText, dap_an_a: '', dap_an_b: '', dap_an_c: '', dap_an_d: '', dap_an_dung: '', giai_thich: '', errors: [] };
+                    state = 'IN_QUESTION';
+                    continue;
+                }
+
+                if (!cur) continue;
+
+                // 2. Answer option?
+                var am = matchAnswerLine(line);
+                if (am !== null) {
+                    state = 'IN_ANSWERS';
+                    cur['dap_an_' + am.letter.toLowerCase()] = am.text;
+                    if (am.markedCorrect) {
+                        cur.dap_an_dung = am.letter;
+                    } else if (!cur.dap_an_dung && boldSet[am.text]) {
+                        // Bold answer from Word = correct
+                        cur.dap_an_dung = am.letter;
                     }
-
-                    currentQuestion = {
-                        noi_dung: questionMatch[2].trim(),
-                        dap_an_a: '',
-                        dap_an_b: '',
-                        dap_an_c: '',
-                        dap_an_d: '',
-                        dap_an_dung: '',
-                        errors: []
-                    };
                     continue;
                 }
 
-                if (!currentQuestion) continue;
+                // 3. Explicit correct answer line?
+                var dm = matchCorrectAnswerLine(line);
+                if (dm !== null) { cur.dap_an_dung = dm; continue; }
 
-                // Check for answers: "A.", "A)", "A:"
-                var answerMatch = line.match(/^([A-Da-d])[.):\s]+(.+)/);
-                if (answerMatch) {
-                    var letter = answerMatch[1].toUpperCase();
-                    var answerText = answerMatch[2].trim();
+                // 4. Explanation?
+                var em = matchExplanationLine(line);
+                if (em !== null) { cur.giai_thich = em; continue; }
 
-                    if (letter === 'A') currentQuestion.dap_an_a = answerText;
-                    else if (letter === 'B') currentQuestion.dap_an_b = answerText;
-                    else if (letter === 'C') currentQuestion.dap_an_c = answerText;
-                    else if (letter === 'D') currentQuestion.dap_an_d = answerText;
-                    continue;
-                }
-
-                // Check for correct answer: "Đáp án: B", "ĐA: B", "Đáp án đúng: B"
-                var correctMatch = line.match(/^(?:Đáp\s*án|ĐA|Đáp\s*án\s*đúng)[:\s]+([A-Da-d])/i);
-                if (correctMatch) {
-                    currentQuestion.dap_an_dung = correctMatch[1].toUpperCase();
-                    continue;
-                }
-
-                // If line doesn't match any pattern, it might be continuation of question
-                if (currentQuestion && !currentQuestion.dap_an_a) {
-                    currentQuestion.noi_dung += ' ' + line;
+                // 5. Continuation of current section
+                if (state === 'IN_QUESTION') {
+                    cur.noi_dung += '\n' + line;
+                } else if (state === 'IN_ANSWERS') {
+                    var lastL = getLastFilledAnswer(cur);
+                    if (lastL) cur['dap_an_' + lastL.toLowerCase()] += ' ' + line;
                 }
             }
 
-            // Don't forget last question
-            if (currentQuestion && currentQuestion.noi_dung) {
-                questions.push(currentQuestion);
-            }
+            if (cur) { finalizeQ(cur, boldSet); questions.push(cur); }
 
-            // Validate questions
-            questions.forEach(function(q, index) {
+            // Validate
+            questions.forEach(function(q) {
                 q.errors = [];
-                if (!q.noi_dung) q.errors.push('Thiếu nội dung');
-                if (!q.dap_an_a) q.errors.push('Thiếu đáp án A');
-                if (!q.dap_an_b) q.errors.push('Thiếu đáp án B');
-                if (!q.dap_an_c) q.errors.push('Thiếu đáp án C');
-                if (!q.dap_an_d) q.errors.push('Thiếu đáp án D');
+                if (!q.noi_dung)    q.errors.push('Thiếu nội dung');
+                if (!q.dap_an_a)    q.errors.push('Thiếu đáp án A');
+                if (!q.dap_an_b)    q.errors.push('Thiếu đáp án B');
+                if (!q.dap_an_c)    q.errors.push('Thiếu đáp án C');
+                if (!q.dap_an_d)    q.errors.push('Thiếu đáp án D');
                 if (!q.dap_an_dung) q.errors.push('Thiếu đáp án đúng');
             });
 
             return questions;
+        }
+
+        // Returns question text (stripped prefix) or null
+        function matchQuestionStart(line) {
+            // "Câu 1:", "Câu 1.", "1.", "1:", "1)", "1/"
+            var m = line.match(/^(?:(?:Câu|Question|Q)\s+)?(\d{1,3})\s*[.:)\s\/\-]+\s*(.+)/i);
+            if (!m) return null;
+            var n = parseInt(m[1]);
+            if (n < 1 || n > 500) return null;
+            // Avoid matching answer lines like "A. something" (letters only)
+            // and lines where the "number" is part of a formula "1+1"
+            var after = m[2].trim();
+            if (!after) return null;
+            return after;
+        }
+
+        // Returns {letter, text, markedCorrect} or null
+        function matchAnswerLine(line) {
+            // Asterisk prefix marks correct: *A. Text
+            var starM = line.match(/^\*([A-Da-d])[.):\s\-]+(.+)/);
+            if (starM) return { letter: starM[1].toUpperCase(), text: starM[2].trim(), markedCorrect: true };
+
+            // Normal: A. / A) / A: / A -
+            var m = line.match(/^([A-Da-d])[.):\s\-]+(.+)/);
+            if (!m) return null;
+
+            var letter = m[1].toUpperCase();
+            var text = m[2].trim();
+            var marked = false;
+
+            // Trailing asterisk: "Answer text *"
+            if (/\s\*$/.test(text)) {
+                marked = true;
+                text = text.replace(/\s\*$/, '').trim();
+            }
+            // Trailing (X) where X matches this letter: "Answer text (B)"
+            var tailBracket = text.match(/\(([A-D])\)$/i);
+            if (tailBracket && tailBracket[1].toUpperCase() === letter) {
+                marked = true;
+                text = text.replace(/\([A-D]\)$/i, '').trim();
+            }
+
+            return { letter: letter, text: text, markedCorrect: marked };
+        }
+
+        // Returns letter A-D or null
+        function matchCorrectAnswerLine(line) {
+            var m = line.match(/^(?:Đáp\s*án(?:\s*(?:đúng|là|:))?|ĐA|Answer(?:\s*key)?|Key|Chọn)\s*[:\s]\s*([A-Da-d])/i);
+            return m ? m[1].toUpperCase() : null;
+        }
+
+        // Returns explanation text or null
+        function matchExplanationLine(line) {
+            var m = line.match(/^(?:Giải\s*thích|Giải|Hướng\s*dẫn|Note|Explanation?|Lý\s*do)\s*[:\s]+(.+)/i);
+            return m ? m[1].trim() : null;
+        }
+
+        function getLastFilledAnswer(q) {
+            if (q.dap_an_d) return 'D';
+            if (q.dap_an_c) return 'C';
+            if (q.dap_an_b) return 'B';
+            if (q.dap_an_a) return 'A';
+            return null;
+        }
+
+        function finalizeQ(q, boldSet) {
+            q.noi_dung = q.noi_dung.trim();
+            // Last-resort bold detection: match against full answer strings
+            if (!q.dap_an_dung) {
+                ['A','B','C','D'].forEach(function(L) {
+                    var txt = q['dap_an_' + L.toLowerCase()];
+                    if (txt && boldSet[txt.trim()]) q.dap_an_dung = L;
+                });
+            }
+        }
+
+        // Build set of bold text content from TinyMCE HTML
+        function extractBoldTextSet(html) {
+            var set = {};
+            if (!html) return set;
+            try {
+                var div = document.createElement('div');
+                div.innerHTML = html;
+                var bolds = div.querySelectorAll('strong, b');
+                for (var i = 0; i < bolds.length; i++) {
+                    var t = bolds[i].textContent.trim();
+                    // Strip "A. " prefix if bold wraps the whole answer line
+                    var cleaned = t.replace(/^[A-D][.):\s\-]+/i, '').trim();
+                    if (cleaned) set[cleaned] = true;
+                    if (t) set[t] = true;
+                }
+            } catch(e) {}
+            return set;
         }
 
         // Update preview panel
@@ -802,11 +920,13 @@ D. 10
                 html += '</div>';
                 html += '<div class="question-content">' + escapeHtml(q.noi_dung) + '</div>';
                 html += '<div class="answers-list">';
-                html += renderAnswer('A', q.dap_an_a, q.dap_an_dung === 'A');
-                html += renderAnswer('B', q.dap_an_b, q.dap_an_dung === 'B');
-                html += renderAnswer('C', q.dap_an_c, q.dap_an_dung === 'C');
-                html += renderAnswer('D', q.dap_an_d, q.dap_an_dung === 'D');
+                ['A','B','C','D'].forEach(function(L) {
+                    html += renderAnswer(L, q['dap_an_' + L.toLowerCase()], q.dap_an_dung === L);
+                });
                 html += '</div>';
+                if (q.giai_thich) {
+                    html += '<div class="explanation-box"><span>💡 Giải thích:</span> ' + escapeHtml(q.giai_thich) + '</div>';
+                }
                 html += '</div>';
             });
 

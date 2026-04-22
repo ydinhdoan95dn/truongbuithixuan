@@ -68,10 +68,10 @@ $jsData = array(
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kết quả - <?php echo SITE_NAME; ?></title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { height: 100%; overflow: hidden; font-family: 'Quicksand', sans-serif; background: #F0F2F5; }
+        html, body { height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; background: #F0F2F5; }
         .app-container { display: flex; height: 100vh; width: 100vw; }
         .sidebar { width: 280px; min-width: 280px; background: linear-gradient(180deg, #667eea 0%, #764ba2 100%); display: flex; flex-direction: column; color: white; padding: 20px; }
         .sidebar-header { text-align: center; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.15); margin-bottom: 20px; }

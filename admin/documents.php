@@ -203,7 +203,7 @@ foreach ($taiLieuList as $tl) {
     <title>Quản lý tài liệu - <?php echo SITE_NAME; ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/style.css">
     <!-- TinyMCE Editor -->
@@ -711,7 +711,7 @@ foreach ($taiLieuList as $tl) {
                 automatic_uploads: true,
                 images_reuse_filename: true,
                 file_picker_types: 'image',
-                content_style: 'body { font-family: Quicksand, sans-serif; font-size: 16px; line-height: 1.6; }',
+                content_style: 'body { font-family: Inter, sans-serif; font-size: 16px; line-height: 1.6; }',
                 branding: false,
                 promotion: false
             });
@@ -847,7 +847,7 @@ foreach ($taiLieuList as $tl) {
                 automatic_uploads: true,
                 images_reuse_filename: true,
                 file_picker_types: 'image',
-                content_style: 'body { font-family: Quicksand, sans-serif; font-size: 16px; line-height: 1.6; }',
+                content_style: 'body { font-family: Inter, sans-serif; font-size: 16px; line-height: 1.6; }',
                 branding: false,
                 promotion: false
             });

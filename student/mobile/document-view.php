@@ -46,11 +46,11 @@ $pageTitle = $taiLieu['tieu_de'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title><?php echo htmlspecialchars($pageTitle); ?></title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Inter', sans-serif;
             height: 100%;
             overflow: hidden;
         }
