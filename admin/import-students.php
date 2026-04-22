@@ -630,62 +630,75 @@ Ví dụ:
             updatePreview();
         }
 
-        // Smart parser for Excel data
+        // Smart parser for Excel data — v2: header-aware, smart column detection
+        function isDateStr(val) {
+            return /^\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}$/.test(val);
+        }
+        function isGenderStr(val) {
+            return /^(nam|nữ|nu|male|female|m|f|0|1)$/i.test(val);
+        }
+        function parseGender(val) {
+            var v = val.toLowerCase().trim();
+            return (v === 'nữ' || v === 'nu' || v === 'female' || v === 'f' || v === '0') ? 'Nữ' : 'Nam';
+        }
+        function isHeaderLine(parts) {
+            var joined = parts.join(' ').toLowerCase();
+            return /họ\s*tên|ho\s*ten|\bname\b|tên học sinh/.test(joined) ||
+                   /^(stt|#|no\.?|tt|thứ tự)$/i.test(parts[0].trim());
+        }
+
         function parseStudentsFromText(text) {
             var students = [];
             var lines = text.split(/\n/);
+            var headerSkipped = false;
 
             for (var i = 0; i < lines.length; i++) {
                 var line = lines[i].trim();
                 if (!line) continue;
 
-                // Split by tab (Excel default) or multiple spaces
+                // Split: tab first (Excel), then 2+ spaces, then single column
                 var parts = line.split(/\t/);
                 if (parts.length < 2) {
-                    // Try splitting by multiple spaces
-                    parts = line.split(/\s{2,}/);
+                    var sp = line.split(/\s{2,}/);
+                    parts = (sp.length >= 2) ? sp : [line];
+                }
+                parts = parts.map(function(p) { return p.trim(); }).filter(function(p) { return p !== ''; });
+                if (!parts.length) continue;
+
+                // Auto-skip header row (first non-empty row with keyword match)
+                if (!headerSkipped && isHeaderLine(parts)) {
+                    headerSkipped = true;
+                    continue;
                 }
 
-                if (parts.length < 2) continue;
+                // Skip STT column if first cell is a plain number
+                var startIndex = (parts.length > 1 && /^\d+$/.test(parts[0])) ? 1 : 0;
+                var data = parts.slice(startIndex);
 
-                // Check if first column is STT (number only)
-                var startIndex = 0;
-                if (/^\d+$/.test(parts[0].trim())) {
-                    startIndex = 1; // Skip STT column
-                }
+                var student = { ho_ten: '', ngay_sinh: '', gioi_tinh: 'Nam', errors: [] };
 
-                var student = {
-                    ho_ten: '',
-                    ngay_sinh: '',
-                    gioi_tinh: 'Nam',
-                    errors: []
-                };
+                // Smart column detection: categorize each cell by content
+                var nameSet = false;
+                for (var j = 0; j < data.length; j++) {
+                    var val = data[j];
+                    if (!val) continue;
 
-                // Họ tên
-                if (parts[startIndex]) {
-                    student.ho_ten = parts[startIndex].trim();
-                }
-
-                // Ngày sinh
-                if (parts[startIndex + 1]) {
-                    var dateStr = parts[startIndex + 1].trim();
-                    // Validate date format dd/mm/yyyy or dd-mm-yyyy
-                    if (/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4}$/.test(dateStr)) {
-                        student.ngay_sinh = dateStr;
+                    if (!student.ngay_sinh && isDateStr(val)) {
+                        // Normalize: ensure dd/mm/yyyy format
+                        student.ngay_sinh = val.replace(/\./g, '/');
+                        continue;
+                    }
+                    if (isGenderStr(val)) {
+                        student.gioi_tinh = parseGender(val);
+                        continue;
+                    }
+                    // First unclassified string = name
+                    if (!nameSet) {
+                        student.ho_ten = val;
+                        nameSet = true;
                     }
                 }
 
-                // Giới tính
-                if (parts[startIndex + 2]) {
-                    var gt = parts[startIndex + 2].trim().toLowerCase();
-                    if (gt === 'nữ' || gt === 'nu' || gt === 'female' || gt === 'f') {
-                        student.gioi_tinh = 'Nữ';
-                    } else {
-                        student.gioi_tinh = 'Nam';
-                    }
-                }
-
-                // Validate
                 if (!student.ho_ten) {
                     student.errors.push('Thiếu họ tên');
                 }

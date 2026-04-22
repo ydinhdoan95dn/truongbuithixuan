@@ -158,7 +158,7 @@ if (!$existingSession && !isset($_POST['start_exam'])):
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chuẩn bị thi - <?php echo SITE_NAME; ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --vh: 1vh;
@@ -170,8 +170,8 @@ if (!$existingSession && !isset($_POST['start_exam'])):
             height: 100%;
             height: calc(var(--vh, 1vh) * 100);
             overflow: hidden;
-            font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
         }
 
         .app-container {
@@ -408,7 +408,7 @@ if (!$existingSession && !isset($_POST['start_exam'])):
         .prep-stat-value {
             font-size: clamp(1.4rem, 3vw, 2rem);
             font-weight: 700;
-            color: #667eea;
+            color: #4F46E5;
         }
 
         .prep-stat-label {
@@ -472,7 +472,7 @@ if (!$existingSession && !isset($_POST['start_exam'])):
         }
 
         .back-link:hover {
-            color: #667eea;
+            color: #4F46E5;
         }
     </style>
 </head>
@@ -666,7 +666,7 @@ $questionsJson = json_encode($cauHoiList, JSON_UNESCAPED_UNICODE);
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Đang làm bài - <?php echo SITE_NAME; ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --vh: 1vh;
@@ -689,8 +689,8 @@ $questionsJson = json_encode($cauHoiList, JSON_UNESCAPED_UNICODE);
             height: 100%;
             height: calc(var(--vh, 1vh) * 100);
             overflow: hidden;
-            font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
         }
 
         .app-container {
@@ -758,7 +758,7 @@ $questionsJson = json_encode($cauHoiList, JSON_UNESCAPED_UNICODE);
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #4ECDC4, #44A8B3);
+            background: linear-gradient(90deg, #4F46E5, #7C3AED);
             border-radius: 6px;
             transition: width 0.3s;
         }
@@ -855,14 +855,14 @@ $questionsJson = json_encode($cauHoiList, JSON_UNESCAPED_UNICODE);
         }
 
         .answer-btn:hover {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
+            border-color: #4F46E5;
+            background: rgba(79, 70, 229, 0.08);
             transform: translateY(-2px);
         }
 
         .answer-btn.selected {
-            border-color: #4ECDC4;
-            background: rgba(78, 205, 196, 0.15);
+            border-color: #4F46E5;
+            background: rgba(79, 70, 229, 0.12);
         }
 
         .answer-letter {
@@ -870,7 +870,7 @@ $questionsJson = json_encode($cauHoiList, JSON_UNESCAPED_UNICODE);
             height: var(--answer-letter-size);
             min-width: var(--answer-letter-size);
             border-radius: clamp(10px, 1vw, 14px);
-            background: #667eea;
+            background: #4F46E5;
             color: white;
             display: flex;
             align-items: center;
@@ -1016,7 +1016,7 @@ $questionsJson = json_encode($cauHoiList, JSON_UNESCAPED_UNICODE);
         .modal-stat-value {
             font-size: clamp(1.5rem, 3vw, 2.2rem);
             font-weight: 700;
-            color: #667eea;
+            color: #4F46E5;
         }
 
         .modal-stat-value.score {
@@ -1051,7 +1051,7 @@ $questionsJson = json_encode($cauHoiList, JSON_UNESCAPED_UNICODE);
         }
 
         .modal-btn.primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
             color: white;
         }
 
@@ -1186,9 +1186,9 @@ $questionsJson = json_encode($cauHoiList, JSON_UNESCAPED_UNICODE);
         }
 
         .q-dot.current {
-            border-color: #667eea;
+            border-color: #4F46E5;
             transform: scale(1.15);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
         }
 
         /* Score Popup */
